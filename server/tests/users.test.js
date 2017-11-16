@@ -13,15 +13,19 @@ const uid1 = new ObjectID();
 const users = [
   {
     _id: uid1,
-    email: 'user1@example.test',
-    password: 'password1',
+    email: 'alanaliagadev@example.test',
+    password: 'password',
+    fullname: 'Alan Aliaga',
+    username: 'allen4dev',
   },
 ];
 
 beforeEach(done => {
   User.remove({})
     .then(() => {
-      User.insertMany(users);
+      const userOne = new User(users[0]);
+
+      return userOne.save();
     })
     .then(() => done());
 });
@@ -40,7 +44,6 @@ describe('POST /api/users', () => {
       .expect(201)
       .expect(res => {
         const { user } = res.body;
-
         expect(res.headers.authorization).toBeDefined();
         expect(user.email).toBe(email);
         expect(user.password).not.toBe(password);
@@ -63,12 +66,29 @@ describe('POST /api/users', () => {
 describe('PUT /api/users', () => {
   it('should update a user if Authorization token is present', done => {
     const token = jwt.sign({ _id: uid1 }, 'secret');
+    const fullname = 'random name';
+    const username = 'randomUsername';
 
     request(app)
       .put('/api/users')
       .set('Authorization', `Bearer ${token}`)
+      .send({ fullname, username })
       .expect(200)
-      .expect(res => {})
-      .end(done);
+      .expect(res => {
+        const { user } = res.body;
+
+        expect(user.fullname).toBe(fullname);
+        expect(user.username).toBe(username);
+      })
+      .end(err => {
+        if (err) return done(err);
+
+        User.findById(uid1)
+          .then(user => {
+            expect(user._id.toHexString()).toBe(uid1.toHexString());
+            done();
+          })
+          .catch(done);
+      });
   });
 });
