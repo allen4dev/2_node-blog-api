@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const User = mongoose.model('User');
 
-exports.saveUser = (req, res) => {
+exports.saveUser = (req, res, next) => {
   const user = new User(req.body);
 
   user
@@ -14,5 +14,5 @@ exports.saveUser = (req, res) => {
         .header('Authorization', `Bearer ${token}`)
         .send({ user });
     })
-    .catch(err => res.status(500).send({ error: err }));
+    .catch(err => next(new Error('Invalid email or password supplied')));
 };

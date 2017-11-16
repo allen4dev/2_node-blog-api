@@ -31,4 +31,15 @@ describe('POST /api/users', () => {
       })
       .end(done);
   });
+
+  it('should return a 400 Bad Request if request is invalid', done => {
+    request(app)
+      .post('/api/users')
+      .send({
+        email: 'email',
+        password: 'pass',
+      })
+      .expect(400)
+      .end(done);
+  });
 });
