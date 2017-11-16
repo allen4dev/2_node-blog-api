@@ -1,13 +1,29 @@
 const mongoose = require('mongoose');
 const request = require('supertest');
 const expect = require('expect');
+const jwt = require('jsonwebtoken');
+const { ObjectID } = require('mongodb');
 
 const app = require('./../app');
 
 const User = mongoose.model('User');
 
+const uid1 = new ObjectID();
+
+const users = [
+  {
+    _id: uid1,
+    email: 'user1@example.test',
+    password: 'password1',
+  },
+];
+
 beforeEach(done => {
-  User.remove({}).then(() => done());
+  User.remove({})
+    .then(() => {
+      User.insertMany(users);
+    })
+    .then(() => done());
 });
 
 describe('POST /api/users', () => {
@@ -40,6 +56,19 @@ describe('POST /api/users', () => {
         password: 'pass',
       })
       .expect(400)
+      .end(done);
+  });
+});
+
+describe('PUT /api/users', () => {
+  it('should update a user if Authorization token is present', done => {
+    const token = jwt.sign({ _id: uid1 }, 'secret');
+
+    request(app)
+      .put('/api/users')
+      .set('Authorization', `Bearer ${token}`)
+      .expect(200)
+      .expect(res => {})
       .end(done);
   });
 });
