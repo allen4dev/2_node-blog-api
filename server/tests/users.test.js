@@ -25,7 +25,7 @@ describe('POST /api/users', () => {
       .expect(res => {
         const { user } = res.body;
         expect(user.email).toBe(email);
-        expect(user.password).toBe(password);
+        expect(user.password).not.toBe(password);
       })
       .end(done);
   });

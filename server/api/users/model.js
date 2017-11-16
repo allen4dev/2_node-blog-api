@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
+const bcrypt = require('bcryptjs');
 
 const { Schema } = mongoose;
 
@@ -34,6 +35,25 @@ const UserSchema = new Schema({
     type: Date,
     default: Date.now(),
   },
+});
+
+UserSchema.pre('save', function hashPassword(next) {
+  if (this.isModified('password')) {
+    const saltRounds = 10;
+
+    bcrypt
+      .genSalt(saltRounds)
+      .then(salt => {
+        return bcrypt.hash(this.password, salt);
+      })
+      .then(hash => {
+        this.password = hash;
+        next();
+      })
+      .catch(next);
+  } else {
+    next();
+  }
 });
 
 const User = mongoose.model('User', UserSchema);
