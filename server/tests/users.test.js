@@ -11,7 +11,7 @@ beforeEach(done => {
 });
 
 describe('POST /api/users', () => {
-  it('should save a new user', done => {
+  it('should save a new user and set an Authorization header with the token', done => {
     const email = 'test1@example.test';
     const password = 'password1';
 
@@ -24,6 +24,8 @@ describe('POST /api/users', () => {
       .expect(201)
       .expect(res => {
         const { user } = res.body;
+
+        expect(res.headers.authorization).toBeDefined();
         expect(user.email).toBe(email);
         expect(user.password).not.toBe(password);
       })

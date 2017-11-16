@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 const { Schema } = mongoose;
 
@@ -36,6 +37,10 @@ const UserSchema = new Schema({
     default: Date.now(),
   },
 });
+
+UserSchema.methods.generateAuthToken = function() {
+  return jwt.sign({ _id: this._id }, 'secret');
+};
 
 UserSchema.pre('save', function hashPassword(next) {
   if (this.isModified('password')) {
