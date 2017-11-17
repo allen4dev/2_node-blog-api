@@ -154,8 +154,7 @@ describe('GET /api/users/:id', () => {
   });
 });
 
-// use this in auth
-xdescribe('GET /api/users/me', () => {
+describe('GET /api/users/me', () => {
   it('should return the authenticated user', done => {
     const token = jwt.sign({ _id: uid1 }, 'secret');
 
@@ -165,9 +164,16 @@ xdescribe('GET /api/users/me', () => {
       .expect(200)
       .expect(res => {
         User.findById(res.body.user._id).then(user => {
-          expect(user._id).toBe(uid1.toHexString());
+          expect(user._id.toHexString()).toBe(uid1.toHexString());
         });
       })
+      .end(done);
+  });
+
+  it('should return 401 if no token present', done => {
+    request(app)
+      .get('/api/users/me')
+      .expect(401)
       .end(done);
   });
 });

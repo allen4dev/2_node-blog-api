@@ -2,6 +2,18 @@ const mongoose = require('mongoose');
 
 const User = mongoose.model('User');
 
+exports.param = (req, res, next, id) => {
+  User.findById(id)
+    .then(user => {
+      if (!user) return Promise.reject(new Error(`User ${id} not found`));
+
+      req.user = user;
+      next();
+    })
+    .catch(next);
+};
+
+// Route: /
 exports.saveUser = (req, res, next) => {
   const { email, password } = req.body;
   const user = new User({ email, password });
@@ -44,11 +56,17 @@ exports.deleteMe = (req, res, next) => {
     .catch(next);
 };
 
+// Route: /:id
 exports.getUser = (req, res, next) => {
-  User.findById(req.params.id)
+  res.status(200).send({ user: req.user });
+};
+
+// Route: /me
+exports.getMe = (req, res, next) => {
+  User.findById(req.user._id)
     .then(user => {
       if (!user)
-        return Promise.reject(new Error(`User ${req.params.id} not found`));
+        return Promise.reject(new Error(`User ${req.user._id} not found`));
 
       res.status(200).send({ user });
     })
