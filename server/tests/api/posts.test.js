@@ -125,4 +125,56 @@ describe('api posts', () => {
         .end(done);
     });
   });
+
+  describe.only('PUT /api/posts/:id', () => {
+    it('should update a Post if token is present', done => {
+      const id = posts[0]._id.toHexString();
+      const uid = uid1.toHexString();
+      const token = signToken({ _id: uid });
+      const title = 'New Post title';
+      const description = 'New description';
+
+      request(app)
+        .put(`/api/posts/${id}`)
+        .set('Authorization', `Bearer ${token}`)
+        .send({ title, description })
+        .expect(200)
+        .expect(res => {
+          const { post } = res.body;
+
+          expect(post.title).toBe(title);
+          expect(post.description).toBe(description);
+          expect(post.author).toBe(uid);
+          expect(post.updatedAt).toBeDefined();
+        })
+        .end(done);
+    });
+
+    it('should return 401 if no token is present', done => {
+      const id = posts[0]._id.toHexString();
+      const title = 'New Post title';
+      const description = 'New description';
+
+      request(app)
+        .put(`/api/posts/${id}`)
+        .send({ title, description })
+        .expect(401)
+        .end(done);
+    });
+
+    it('should return 404 if Post with the passed id does not exists', done => {
+      const id = new ObjectID().toHexString();
+      const uid = uid1.toHexString();
+      const token = signToken({ _id: uid });
+      const title = 'New Post title';
+      const description = 'New description';
+
+      request(app)
+        .put(`/api/posts/${id}`)
+        .set('Authorization', `Bearer ${token}`)
+        .send({ title, description })
+        .expect(404)
+        .end(done);
+    });
+  });
 });

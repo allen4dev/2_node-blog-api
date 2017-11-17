@@ -9,6 +9,9 @@ router.param('id', controller.param);
 
 router.post('/', ensureAuth, controller.savePost);
 
-router.route('/:id').get(controller.getPost);
+router
+  .route('/:id')
+  .get(controller.getPost)
+  .put(ensureAuth, controller.updatePost);
 
 module.exports = router;

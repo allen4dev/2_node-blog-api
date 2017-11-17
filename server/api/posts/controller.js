@@ -26,7 +26,27 @@ exports.savePost = (req, res, next) => {
 };
 
 exports.getPost = (req, res, next) => {
-  const post = req.post;
+  const { post } = req;
 
   res.status(200).send({ post });
+};
+
+exports.updatePost = (req, res, next) => {
+  const { post, user } = req;
+
+  Post.findOneAndUpdate(
+    { _id: post._id, author: user._id },
+    {
+      ...req.body,
+      updatedAt: Date.now(),
+    },
+    { new: true, runValidators: true },
+  )
+    .then(updated => {
+      if (!updated)
+        return Promise.reject(new Error(`Post ${post._id} not found`));
+
+      res.status(200).send({ post: updated });
+    })
+    .catch(next);
 };
