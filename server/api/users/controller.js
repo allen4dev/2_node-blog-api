@@ -43,3 +43,14 @@ exports.deleteMe = (req, res, next) => {
     })
     .catch(next);
 };
+
+exports.getUser = (req, res, next) => {
+  User.findById(req.params.id)
+    .then(user => {
+      if (!user)
+        return Promise.reject(new Error(`User ${req.params.id} not found`));
+
+      res.status(200).send({ user });
+    })
+    .catch(next);
+};

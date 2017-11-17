@@ -127,3 +127,47 @@ describe('DELETE /api/users', () => {
       .end(done);
   });
 });
+
+describe('GET /api/users/:id', () => {
+  it('should return a user with the given id', done => {
+    const id = uid1.toHexString();
+
+    request(app)
+      .get(`/api/users/${id}`)
+      .expect(200)
+      .expect(res => {
+        const { user } = res.body;
+
+        expect(user._id).toBe(id);
+        expect(user.email).toBe(users[0].email);
+      })
+      .end(done);
+  });
+
+  it('should return 404 if user with id does not exist', done => {
+    const id = new ObjectID().toHexString();
+
+    request(app)
+      .get(`/api/users/${id}`)
+      .expect(404)
+      .end(done);
+  });
+});
+
+// use this in auth
+xdescribe('GET /api/users/me', () => {
+  it('should return the authenticated user', done => {
+    const token = jwt.sign({ _id: uid1 }, 'secret');
+
+    request(app)
+      .get('/api/users/me')
+      .set('Authorization', `Bearer ${token}`)
+      .expect(200)
+      .expect(res => {
+        User.findById(res.body.user._id).then(user => {
+          expect(user._id).toBe(uid1.toHexString());
+        });
+      })
+      .end(done);
+  });
+});
