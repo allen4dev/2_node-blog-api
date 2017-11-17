@@ -5,7 +5,7 @@ const User = mongoose.model('User');
 
 exports.ensureAuth = (req, res, next) => {
   bearer(req, (err, token) => {
-    if (err) return next('Unauthorized');
+    if (err) return next(new Error('Unauthorized'));
     // if (err) return next(err);
 
     User.findByToken(token)

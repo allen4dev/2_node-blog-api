@@ -51,7 +51,7 @@ UserSchema.statics.findByToken = function findByToken(token) {
   try {
     decoded = jwt.verify(token, 'secret');
   } catch (error) {
-    return Promise.reject(new Error('Unauthorized: Invalid token'));
+    return Promise.reject(new Error('Unauthorized'));
   }
 
   return User.findById(decoded._id).then(user => {

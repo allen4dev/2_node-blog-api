@@ -91,4 +91,15 @@ describe('PUT /api/users', () => {
           .catch(done);
       });
   });
+
+  it('should respond 401 if Authorization token is not present', done => {
+    const fullname = 'randomUser';
+    const username = 'randomUsername';
+
+    request(app)
+      .put('/api/users')
+      .send({ fullname, username })
+      .expect(401)
+      .end(done);
+  });
 });
