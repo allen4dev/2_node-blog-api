@@ -11,6 +11,7 @@ function unauthorized(err, res) {
 }
 
 function errorHandlerMiddleware(err, req, res, next) {
+  // console.log('Error', err);
   if (err.message.match(/not found/)) return notFound(err, res);
   if (err.message.match(/Invalid/)) return badRequest(err, res);
   if (err.message.match(/Unauthorized/)) return unauthorized(err, res);

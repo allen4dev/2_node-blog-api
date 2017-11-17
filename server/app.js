@@ -1,5 +1,6 @@
 require('./db');
 require('./api/users/model');
+require('./api/posts/model');
 
 const express = require('express');
 

@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const jwt = require('jsonwebtoken');
 const bearer = require('token-extractor');
 
 const User = mongoose.model('User');
@@ -17,4 +18,8 @@ exports.ensureAuth = (req, res, next) => {
       })
       .catch(next);
   });
+};
+
+exports.signToken = (payload, next) => {
+  return jwt.sign(payload, 'secret');
 };
