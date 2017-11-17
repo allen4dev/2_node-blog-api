@@ -33,3 +33,13 @@ exports.updateMe = (req, res, next) => {
     })
     .catch(next);
 };
+
+exports.deleteMe = (req, res, next) => {
+  User.findByIdAndRemove(req.user._id)
+    .then(deleted => {
+      if (!deleted) return Promise.reject(new Error('User not found'));
+
+      res.status(200).send({ user: deleted });
+    })
+    .catch(next);
+};

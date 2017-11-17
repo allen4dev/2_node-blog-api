@@ -7,5 +7,6 @@ const router = Router();
 
 router.post('/', controller.saveUser);
 router.put('/', ensureAuth, controller.updateMe);
+router.delete('/', ensureAuth, controller.deleteMe);
 
 module.exports = router;

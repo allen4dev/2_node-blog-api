@@ -103,3 +103,27 @@ describe('PUT /api/users', () => {
       .end(done);
   });
 });
+
+describe('DELETE /api/users', () => {
+  it('should delete the authenticated user', done => {
+    const token = jwt.sign({ _id: uid1 }, 'secret');
+
+    request(app)
+      .delete('/api/users')
+      .set('Authorization', `Bearer ${token}`)
+      .expect(200)
+      .expect(res => {
+        const { user } = res.body;
+
+        expect(user._id).toBe(uid1.toHexString());
+      })
+      .end(done);
+  });
+
+  it('should return 401 if no token present', done => {
+    request(app)
+      .delete('/api/users')
+      .expect(401)
+      .end(done);
+  });
+});
