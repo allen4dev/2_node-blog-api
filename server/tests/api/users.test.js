@@ -4,7 +4,7 @@ const expect = require('expect');
 const jwt = require('jsonwebtoken');
 const { ObjectID } = require('mongodb');
 
-const app = require('./../app');
+const app = require('./../../app');
 
 const User = mongoose.model('User');
 
