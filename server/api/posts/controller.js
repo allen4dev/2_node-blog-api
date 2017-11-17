@@ -50,3 +50,16 @@ exports.updatePost = (req, res, next) => {
     })
     .catch(next);
 };
+
+exports.deletePost = (req, res, next) => {
+  const { post, user } = req;
+
+  Post.findOneAndRemove({ _id: post._id, author: user._id })
+    .then(deleted => {
+      if (!deleted)
+        return Promise.reject(new Error(`Post ${post._id} not found`));
+
+      res.status(200).send({ post: deleted });
+    })
+    .catch(next);
+};

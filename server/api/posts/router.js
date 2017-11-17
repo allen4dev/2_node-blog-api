@@ -12,6 +12,7 @@ router.post('/', ensureAuth, controller.savePost);
 router
   .route('/:id')
   .get(controller.getPost)
-  .put(ensureAuth, controller.updatePost);
+  .put(ensureAuth, controller.updatePost)
+  .delete(ensureAuth, controller.deletePost);
 
 module.exports = router;

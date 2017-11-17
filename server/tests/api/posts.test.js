@@ -126,7 +126,7 @@ describe('api posts', () => {
     });
   });
 
-  describe.only('PUT /api/posts/:id', () => {
+  describe('PUT /api/posts/:id', () => {
     it('should update a Post if token is present', done => {
       const id = posts[0]._id.toHexString();
       const uid = uid1.toHexString();
@@ -173,6 +173,56 @@ describe('api posts', () => {
         .put(`/api/posts/${id}`)
         .set('Authorization', `Bearer ${token}`)
         .send({ title, description })
+        .expect(404)
+        .end(done);
+    });
+  });
+
+  describe('DELETE /api/posts/:id', () => {
+    it('should delete a Post if token is present', done => {
+      const id = posts[1]._id.toHexString();
+      const uid = uid2.toHexString();
+      const token = signToken({ _id: uid });
+
+      request(app)
+        .delete(`/api/posts/${id}`)
+        .set('Authorization', `Bearer ${token}`)
+        .expect(200)
+        .expect(res => {
+          const { post } = res.body;
+
+          expect(post._id).toBe(id);
+          expect(post.author).toBe(uid);
+        })
+        .end(err => {
+          if (err) return done(err);
+
+          Post.findById(id)
+            .then(post => {
+              expect(post).toBeNull();
+              done();
+            })
+            .catch(done);
+        });
+    });
+
+    it('should return 401 if no token is present', done => {
+      const id = posts[1]._id.toHexString();
+
+      request(app)
+        .delete(`/api/posts/${id}`)
+        .expect(401)
+        .end(done);
+    });
+
+    it('should return 404 if Post does not exists', done => {
+      const id = new ObjectID().toHexString();
+      const uid = uid2.toHexString();
+      const token = signToken({ _id: uid });
+
+      request(app)
+        .delete(`/api/posts/${id}`)
+        .set('Authorization', `Bearer ${token}`)
         .expect(404)
         .end(done);
     });
