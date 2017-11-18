@@ -75,11 +75,11 @@ describe.only('api comments', () => {
     const populatePosts = Post.remove({}).then(() => Post.insertMany(posts));
 
     const populateComments = Comment.remove({}).then(() =>
-      Comment.insertMany(comments)
+      Comment.insertMany(comments),
     );
 
     Promise.all([populateUsers, populatePosts, populateComments]).then(() =>
-      done()
+      done(),
     );
   });
 
@@ -137,6 +137,33 @@ describe.only('api comments', () => {
           expect(comment.author).toBe(author);
           expect(comment.post).toBe(postId);
         })
+        .end(done);
+    });
+
+    it('should return 401 if token is not present', done => {
+      const postId = posts[0]._id.toHexString();
+      const id = comments[0]._id.toHexString();
+      const content = 'New content for comment';
+
+      request(app)
+        .put(`/api/comments/${id}`)
+        .send({ content, postId })
+        .expect(401)
+        .end(done);
+    });
+
+    it('should return 404 if comment does not exists', done => {
+      const author = uid1.toHexString();
+      const token = signToken({ _id: author });
+      const postId = posts[0]._id.toHexString();
+      const id = new ObjectID().toHexString();
+      const content = 'New content for comment';
+
+      request(app)
+        .put(`/api/comments/${id}`)
+        .set('Authorization', `Bearer ${token}`)
+        .send({ content, postId })
+        .expect(404)
         .end(done);
     });
   });
