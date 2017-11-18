@@ -21,10 +21,12 @@ const PostSchema = new Schema({
     type: Date,
     default: null,
   },
-  // categories: [{
-  //   type: Schema.Types.ObjectId,
-  //   ref: 'Category',
-  // }],
+  categories: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'Category',
+    },
+  ],
   author: {
     type: Schema.Types.ObjectId,
     ref: 'User',

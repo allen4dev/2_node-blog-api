@@ -7,9 +7,11 @@ const router = Router();
 
 router.param('id', controller.param);
 
-router.post('/', controller.saveUser);
-router.put('/', ensureAuth, controller.updateMe);
-router.delete('/', ensureAuth, controller.deleteMe);
+router
+  .route('/')
+  .post(controller.saveUser)
+  .put(ensureAuth, controller.updateMe)
+  .delete(ensureAuth, controller.deleteMe);
 
 router.get('/me', ensureAuth, controller.getMe);
 

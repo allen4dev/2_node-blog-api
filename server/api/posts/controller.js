@@ -14,8 +14,7 @@ exports.param = (req, res, next, id) => {
 };
 
 exports.savePost = (req, res, next) => {
-  const { title, description } = req.body;
-  const post = new Post({ title, description, author: req.user._id });
+  const post = new Post({ ...req.body, author: req.user._id });
 
   post
     .save()
