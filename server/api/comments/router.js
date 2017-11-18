@@ -7,7 +7,9 @@ const router = Router();
 
 router.post('/', ensureAuth, controller.saveComment);
 
-router.route('/:id')
+router
+  .route('/:id')
+  .get(controller.getComment)
   .put(ensureAuth, controller.updateComment);
 
 module.exports = router;

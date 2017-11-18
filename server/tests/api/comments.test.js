@@ -167,4 +167,29 @@ describe.only('api comments', () => {
         .end(done);
     });
   });
+
+  describe('GET /api/comments/:id', () => {
+    it('should find a comment by his id', done => {
+      const id = comments[0]._id.toHexString();
+
+      request(app)
+        .get(`/api/comments/${id}`)
+        .expect(200)
+        .expect(res => {
+          const { comment } = res.body;
+
+          expect(comment._id).toBe(id);
+        })
+        .end(done);
+    });
+
+    it('should return 404 if comment does not exists', done => {
+      const id = new ObjectID().toHexString();
+
+      request(app)
+        .get(`/api/comments/${id}`)
+        .expect(404)
+        .end(done);
+    });
+  });
 });
