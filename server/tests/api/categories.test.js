@@ -79,7 +79,7 @@ const posts = [
   },
 ];
 
-describe.only('api categories', () => {
+describe('api categories', () => {
   beforeEach(done => {
     const populateCategories = Category.remove({}).then(() => {
       return Category.insertMany(categories);
