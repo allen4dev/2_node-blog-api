@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const User = mongoose.model('User');
+const Post = mongoose.model('Post');
 
 exports.param = (req, res, next, id) => {
   User.findById(id)
@@ -36,7 +37,7 @@ exports.updateMe = (req, res, next) => {
   User.findByIdAndUpdate(
     req.user._id,
     { fullname, username },
-    { new: true, runValidators: true }
+    { new: true, runValidators: true },
   )
     .then(updated => {
       if (!updated) return Promise.reject(new Error('User not found'));
@@ -59,6 +60,16 @@ exports.deleteMe = (req, res, next) => {
 // Route: /:id
 exports.getUser = (req, res, next) => {
   res.status(200).send({ user: req.user });
+};
+
+exports.getPosts = (req, res, next) => {
+  const id = req.params.id;
+
+  Post.find({ author: id })
+    .then(posts => {
+      res.status(200).send({ posts });
+    })
+    .catch(next);
 };
 
 // Route: /me

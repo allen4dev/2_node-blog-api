@@ -17,4 +17,5 @@ router.get('/me', ensureAuth, controller.getMe);
 
 router.get('/:id', controller.getUser);
 
+router.get('/:id/posts', controller.getPosts);
 module.exports = router;

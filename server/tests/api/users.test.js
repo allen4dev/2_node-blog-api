@@ -1,34 +1,112 @@
 const mongoose = require('mongoose');
 const request = require('supertest');
 const expect = require('expect');
-const jwt = require('jsonwebtoken');
 const { ObjectID } = require('mongodb');
 
 const app = require('./../../app');
+const { signToken } = require('./../../auth/helpers');
 
 const User = mongoose.model('User');
+const Post = mongoose.model('Post');
+const Comment = mongoose.model('Comment');
 
 const uid1 = new ObjectID();
+const uid2 = new ObjectID();
+
+const postId1 = new ObjectID();
+const postId2 = new ObjectID();
+const postId3 = new ObjectID();
+
+const commentId1 = new ObjectID();
+const commentId2 = new ObjectID();
+const commentId3 = new ObjectID();
+const commentId4 = new ObjectID();
 
 const users = [
   {
     _id: uid1,
-    email: 'alanaliagadev@example.test',
-    password: 'password',
-    fullname: 'Alan Aliaga',
-    username: 'allen4dev',
+    email: 'userOne@example.test',
+    password: 'password1',
+    fullname: 'User One',
+    username: 'user1',
+  },
+  {
+    _id: uid2,
+    email: 'userTwo@example.test',
+    password: 'password2',
+    fullname: 'User Two',
+    username: 'user2',
   },
 ];
 
-describe('api users', () => {
-  beforeEach(done => {
-    User.remove({})
-      .then(() => {
-        const userOne = new User(users[0]);
+const posts = [
+  {
+    _id: postId1,
+    title: 'Post title 1',
+    description: 'Post description 1',
+    author: uid1,
+  },
+  {
+    _id: postId2,
+    title: 'Post title 2',
+    description: 'Post description 2',
+    author: uid2,
+  },
+  {
+    _id: postId3,
+    title: 'Post title 3',
+    description: 'Post description 3',
+    author: uid1,
+  },
+];
 
-        return userOne.save();
-      })
-      .then(() => done());
+const comments = [
+  {
+    _id: commentId1,
+    content: 'comment one',
+    post: postId1,
+    author: uid1,
+  },
+  {
+    _id: commentId2,
+    content: 'comment two',
+    post: postId2,
+    author: uid2,
+  },
+
+  {
+    _id: commentId3,
+    content: 'comment three',
+    post: postId2,
+    author: uid2,
+  },
+
+  {
+    _id: commentId4,
+    content: 'comment four',
+    post: postId2,
+    author: uid2,
+  },
+];
+
+describe.only('api users', () => {
+  beforeEach(done => {
+    const populateUsers = User.remove({}).then(() => {
+      const user1 = new User(users[0]).save();
+      const user2 = new User(users[1]).save();
+
+      return Promise.all([user1, user2]);
+    });
+
+    const populatePosts = Post.remove({}).then(() => Post.insertMany(posts));
+
+    const populateComments = Comment.remove({}).then(() =>
+      Comment.insertMany(comments),
+    );
+
+    Promise.all([populateUsers, populatePosts, populateComments]).then(() =>
+      done(),
+    );
   });
 
   describe('POST /api/users', () => {
@@ -66,7 +144,7 @@ describe('api users', () => {
 
   describe('PUT /api/users', () => {
     it('should update a user if Authorization token is present', done => {
-      const token = jwt.sign({ _id: uid1 }, 'secret');
+      const token = signToken({ _id: uid1.toHexString() });
       const fullname = 'random name';
       const username = 'randomUsername';
 
@@ -107,7 +185,7 @@ describe('api users', () => {
 
   describe('DELETE /api/users', () => {
     it('should delete the authenticated user', done => {
-      const token = jwt.sign({ _id: uid1 }, 'secret');
+      const token = signToken({ _id: uid1.toHexString() });
 
       request(app)
         .delete('/api/users')
@@ -157,7 +235,7 @@ describe('api users', () => {
 
   describe('GET /api/users/me', () => {
     it('should return the authenticated user', done => {
-      const token = jwt.sign({ _id: uid1 }, 'secret');
+      const token = signToken({ _id: uid1.toHexString() });
 
       request(app)
         .get('/api/users/me')
@@ -175,6 +253,31 @@ describe('api users', () => {
       request(app)
         .get('/api/users/me')
         .expect(401)
+        .end(done);
+    });
+  });
+
+  describe('GET /api/users/:id/posts', () => {
+    it('should return all of the posts of a user', done => {
+      const id = uid1.toHexString();
+
+      request(app)
+        .get(`/api/users/${id}/posts`)
+        .expect(200)
+        .expect(res => {
+          const { posts } = res.body;
+
+          expect(posts.length).toBe(2);
+        })
+        .end(done);
+    });
+
+    it('should return 404 if user does not exists', done => {
+      const id = new ObjectID();
+
+      request(app)
+        .get(`/api/users/${id}/posts`)
+        .expect(404)
         .end(done);
     });
   });

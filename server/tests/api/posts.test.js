@@ -68,7 +68,7 @@ const comments = [
   },
 ];
 
-describe.only('api posts', () => {
+describe('api posts', () => {
   // Refactor: Use Promise.all
   beforeEach(done => {
     User.remove({})
