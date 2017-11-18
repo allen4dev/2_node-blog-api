@@ -73,7 +73,11 @@ exports.getComments = (req, res, next) => {
 };
 
 exports.searchPosts = (req, res, next) => {
-  Post.find({ $text: { $search: `"${req.params.term}"` } })
+  Post.find(
+    { $text: { $search: `"${req.params.term}"` } },
+    { score: { $meta: 'textScore' } },
+  )
+    .sort({ score: { $meta: 'textScore' } })
     .then(posts => {
       res.status(200).send({ posts });
     })
