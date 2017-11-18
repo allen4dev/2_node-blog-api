@@ -18,4 +18,6 @@ router.get('/me', ensureAuth, controller.getMe);
 router.get('/:id', controller.getUser);
 
 router.get('/:id/posts', controller.getPosts);
+router.get('/:id/comments', controller.getComments);
+
 module.exports = router;

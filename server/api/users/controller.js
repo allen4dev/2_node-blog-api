@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 
 const User = mongoose.model('User');
 const Post = mongoose.model('Post');
+const Comment = mongoose.model('Comment');
 
 exports.param = (req, res, next, id) => {
   User.findById(id)
@@ -68,6 +69,14 @@ exports.getPosts = (req, res, next) => {
   Post.find({ author: id })
     .then(posts => {
       res.status(200).send({ posts });
+    })
+    .catch(next);
+};
+
+exports.getComments = (req, res, next) => {
+  Comment.find({ author: req.params.id })
+    .then(comments => {
+      res.status(200).send({ comments });
     })
     .catch(next);
 };

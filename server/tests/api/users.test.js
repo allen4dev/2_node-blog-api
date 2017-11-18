@@ -84,12 +84,12 @@ const comments = [
   {
     _id: commentId4,
     content: 'comment four',
-    post: postId2,
+    post: postId1,
     author: uid2,
   },
 ];
 
-describe.only('api users', () => {
+describe('api users', () => {
   beforeEach(done => {
     const populateUsers = User.remove({}).then(() => {
       const user1 = new User(users[0]).save();
@@ -277,6 +277,31 @@ describe.only('api users', () => {
 
       request(app)
         .get(`/api/users/${id}/posts`)
+        .expect(404)
+        .end(done);
+    });
+  });
+
+  describe('GET /api/users/:id/comments', () => {
+    it('should return all comments from a user', done => {
+      const id = uid2.toHexString();
+
+      request(app)
+        .get(`/api/users/${id}/comments`)
+        .expect(200)
+        .expect(res => {
+          const { comments } = res.body;
+
+          expect(comments.length).toBe(3);
+        })
+        .end(done);
+    });
+
+    it('should return 404 if user does not exists', done => {
+      const id = new ObjectID();
+
+      request(app)
+        .get(`/api/users/${id}/comments`)
         .expect(404)
         .end(done);
     });
