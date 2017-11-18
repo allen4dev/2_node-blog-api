@@ -11,6 +11,8 @@ router.post('/', ensureAuth, controller.savePost);
 
 router.get('/:id/comments', controller.getComments);
 
+router.get('/search/:term', controller.searchPosts);
+
 router
   .route('/:id')
   .get(controller.getPost)

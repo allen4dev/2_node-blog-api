@@ -71,3 +71,11 @@ exports.getComments = (req, res, next) => {
     })
     .catch(next);
 };
+
+exports.searchPosts = (req, res, next) => {
+  Post.find({ $text: { $search: `"${req.params.term}"` } })
+    .then(posts => {
+      res.status(200).send({ posts });
+    })
+    .catch(next);
+};

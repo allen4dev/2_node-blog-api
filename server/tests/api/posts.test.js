@@ -17,6 +17,8 @@ const uid2 = new ObjectID();
 
 const postId1 = new ObjectID();
 const postId2 = new ObjectID();
+const postId3 = new ObjectID();
+const postId4 = new ObjectID();
 
 const users = [
   {
@@ -38,15 +40,27 @@ const users = [
 const posts = [
   {
     _id: postId1,
-    title: 'Post 1 title',
-    description: 'Post 1 description',
+    title: 'Best games of you childhood',
+    description: 'Legend of dragoon, Final Fantasy VIII and others.',
     author: uid1,
   },
   {
     _id: postId2,
-    title: 'Post 2 title',
-    description: 'Post 2 description',
+    title: 'Recommended anime series',
+    description: 'One of the best is One Piece',
     author: uid2,
+  },
+  {
+    _id: postId3,
+    title: 'Anime series openings and endings',
+    description: 'I really like Monochrome Rainbow from Bakuman',
+    author: uid1,
+  },
+  {
+    _id: postId4,
+    title: 'Anime',
+    description: 'Some body',
+    author: uid1,
   },
 ];
 
@@ -68,7 +82,7 @@ const comments = [
   },
 ];
 
-describe('api posts', () => {
+describe.only('api posts', () => {
   // Refactor: Use Promise.all
   beforeEach(done => {
     User.remove({})
@@ -275,6 +289,23 @@ describe('api posts', () => {
       request(app)
         .get(`/api/posts/${id}/comments`)
         .expect(404)
+        .end(done);
+    });
+  });
+
+  describe('GET /api/posts/search/:term', () => {
+    it('should find all posts that match the :term', done => {
+      const term = 'anime series';
+
+      request(app)
+        .get(`/api/posts/search/${term}`)
+        .expect(200)
+        .expect(res => {
+          const { posts: results } = res.body;
+
+          expect(results.length).toBe(2);
+          // can sort and compare title, etc
+        })
         .end(done);
     });
   });
