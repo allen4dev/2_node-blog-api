@@ -8,11 +8,15 @@ const app = require('./../../app');
 
 const User = mongoose.model('User');
 const Post = mongoose.model('Post');
+const Comment = mongoose.model('Comment');
 
 const { signToken } = require('./../../auth/helpers');
 
 const uid1 = new ObjectID();
 const uid2 = new ObjectID();
+
+const postId1 = new ObjectID();
+const postId2 = new ObjectID();
 
 const users = [
   {
@@ -33,20 +37,38 @@ const users = [
 
 const posts = [
   {
-    _id: new ObjectID(),
+    _id: postId1,
     title: 'Post 1 title',
     description: 'Post 1 description',
     author: uid1,
   },
   {
-    _id: new ObjectID(),
+    _id: postId2,
     title: 'Post 2 title',
     description: 'Post 2 description',
     author: uid2,
   },
 ];
 
-describe('api posts', () => {
+const comments = [
+  {
+    content: 'comment one',
+    post: postId1,
+    author: uid1,
+  },
+  {
+    content: 'comment two',
+    post: postId2,
+    author: uid2,
+  },
+  {
+    content: 'comment three',
+    post: postId1,
+    author: uid2,
+  },
+];
+
+describe.only('api posts', () => {
   // Refactor: Use Promise.all
   beforeEach(done => {
     User.remove({})
@@ -60,9 +82,13 @@ describe('api posts', () => {
   });
 
   beforeEach(done => {
-    Post.remove({})
-      .then(() => Post.insertMany(posts))
-      .then(() => done());
+    const populatePosts = Post.remove({}).then(() => Post.insertMany(posts));
+
+    const populateComments = Comment.remove({}).then(() =>
+      Comment.insertMany(comments),
+    );
+
+    Promise.all([populatePosts, populateComments]).then(() => done());
   });
 
   describe('POST /api/posts', () => {
@@ -223,6 +249,31 @@ describe('api posts', () => {
       request(app)
         .delete(`/api/posts/${id}`)
         .set('Authorization', `Bearer ${token}`)
+        .expect(404)
+        .end(done);
+    });
+  });
+
+  describe('GET /api/posts/:id/comments', () => {
+    it('should return all comments from a Post', done => {
+      const id = postId1.toHexString();
+
+      request(app)
+        .get(`/api/posts/${id}/comments`)
+        .expect(200)
+        .expect(res => {
+          const { comments } = res.body;
+
+          expect(comments.length).toBe(2);
+        })
+        .end(done);
+    });
+
+    it('should return 404 if post does not exists', done => {
+      const id = new ObjectID().toHexString();
+
+      request(app)
+        .get(`/api/posts/${id}/comments`)
         .expect(404)
         .end(done);
     });

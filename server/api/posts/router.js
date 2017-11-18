@@ -9,6 +9,8 @@ router.param('id', controller.param);
 
 router.post('/', ensureAuth, controller.savePost);
 
+router.get('/:id/comments', controller.getComments);
+
 router
   .route('/:id')
   .get(controller.getPost)

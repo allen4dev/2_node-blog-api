@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const Post = mongoose.model('Post');
+const Comment = mongoose.model('Comment');
 
 exports.param = (req, res, next, id) => {
   Post.findById(id)
@@ -59,6 +60,14 @@ exports.deletePost = (req, res, next) => {
         return Promise.reject(new Error(`Post ${post._id} not found`));
 
       res.status(200).send({ post: deleted });
+    })
+    .catch(next);
+};
+
+exports.getComments = (req, res, next) => {
+  Comment.find({ post: req.params.id })
+    .then(comments => {
+      res.status(200).send({ comments });
     })
     .catch(next);
 };

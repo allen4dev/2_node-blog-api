@@ -63,7 +63,7 @@ const comments = [
   },
 ];
 
-describe.only('api comments', () => {
+describe('api comments', () => {
   beforeEach(done => {
     const populateUsers = User.remove({}).then(() => {
       const user1 = new User(users[0]).save();
