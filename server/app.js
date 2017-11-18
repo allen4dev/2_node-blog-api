@@ -2,6 +2,7 @@ require('./db');
 require('./api/users/model');
 require('./api/posts/model');
 require('./api/categories/model');
+require('./api/comments/model');
 
 const express = require('express');
 

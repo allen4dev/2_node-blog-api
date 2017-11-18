@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 const request = require('supertest');
 const expect = require('expect');
-const jwt = require('jsonwebtoken');
 const { ObjectID } = require('mongodb');
+const { signToken } = require('./../../auth/helpers');
 
 const app = require('./../../app');
 
@@ -44,7 +44,7 @@ const posts = [
   },
 ];
 
-describe('api comments', () => {
+describe.only('api comments', () => {
   beforeEach(done => {
     const populateUsers = User.remove({}).then(() => {
       const user1 = new User(users[0]).save();
@@ -59,8 +59,36 @@ describe('api comments', () => {
   });
 
   describe('POST /api/comments', () => {
-    it('should create a new comment if token is present', () => {
-      expect(42).toBe(42);
+    it('should create a new comment if token is present', done => {
+      const postId = posts[0]._id.toHexString();
+      const author = uid1.toHexString();
+      const content = 'This post is awesome';
+      const token = signToken({ _id: author });
+
+      request(app)
+        .post('/api/comments')
+        .set('Authorization', `Bearer ${token}`)
+        .send({ content, postId })
+        .expect(201)
+        .expect(res => {
+          const { comment } = res.body;
+
+          expect(comment.content).toBe(content);
+          expect(comment.post).toBe(postId);
+          expect(comment.author).toBe(author);
+        })
+        .end(done);
+    });
+
+    it('should return 401 if no token is present', done => {
+      const postId = posts[0]._id.toHexString();
+      const content = 'This post is awesome';
+
+      request(app)
+        .post('/api/comments')
+        .send({ content, postId })
+        .expect(401)
+        .end(done);
     });
   });
 });
