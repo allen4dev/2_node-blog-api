@@ -96,11 +96,7 @@ describe.only('api categories', () => {
       return Promise.all([user1, user2]);
     });
 
-    Promise.all([
-      populateUsers,
-      populateCategories,
-      populatePosts,
-    ]).then(results => {
+    Promise.all([populateUsers, populateCategories, populatePosts]).then(() => {
       done();
     });
   });
@@ -117,6 +113,22 @@ describe.only('api categories', () => {
           const { category } = res.body;
 
           expect(category.name).toBe(name);
+        })
+        .end(done);
+    });
+  });
+
+  describe('GET /api/categories/:id/posts', () => {
+    it('should get the posts of a category', done => {
+      const id = catId1.toHexString();
+
+      request(app)
+        .get(`/api/categories/${id}/posts`)
+        .expect(200)
+        .expect(res => {
+          const { posts } = res.body;
+
+          expect(posts.length).toBe(3);
         })
         .end(done);
     });
