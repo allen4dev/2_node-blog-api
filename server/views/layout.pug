@@ -17,11 +17,11 @@ html(lang="en")
               span.UserInfo-username username
               span.UserInfo-email email
             .UserBox-actions
-              a.UserBox-signout(href="#") Signout
+              a.UserBox-signout(href="/logout") Signout
         else
           .Header-actions
-            a.Header-signin(href="#") Signin
-            a.Header-Signup(href="#") Signup
+            a.Header-signin(href="/signin") Signin
+            a.Header-Signup(href="/signup") Signup
     .Content
       block content
     

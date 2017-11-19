@@ -1,0 +1,12 @@
+extends layout
+
+block content
+  form.Form(method="POST" action="/login")
+    .Form-field
+      label.Form-label(for="") Email
+      input(name="email" type="text", placeholder="email@example.test")
+    .Form-field
+      label.Form-label(for="") Password
+      input(name="password" type="password", placeholder="secretPassword")
+    .Form-field
+      button(type="submit") Submit
