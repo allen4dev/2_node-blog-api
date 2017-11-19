@@ -23,3 +23,16 @@ exports.ensureAuth = (req, res, next) => {
 exports.signToken = (payload, next) => {
   return jwt.sign(payload, 'secret');
 };
+
+exports.authenticate = (req, res, next) => {
+  const { email, password } = req.body;
+
+  User.authenticate(email, password)
+    .then(user => {
+      req.token = jwt.sign({ _id: user._id }, 'secret');
+      req.user = user;
+
+      next();
+    })
+    .catch(next);
+};

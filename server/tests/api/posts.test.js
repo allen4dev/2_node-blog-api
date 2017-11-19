@@ -82,7 +82,7 @@ const comments = [
   },
 ];
 
-describe.only('api posts', () => {
+describe('api posts', () => {
   // Refactor: Use Promise.all
   beforeEach(done => {
     User.remove({})
@@ -99,7 +99,7 @@ describe.only('api posts', () => {
     const populatePosts = Post.remove({}).then(() => Post.insertMany(posts));
 
     const populateComments = Comment.remove({}).then(() =>
-      Comment.insertMany(comments),
+      Comment.insertMany(comments)
     );
 
     Promise.all([populatePosts, populateComments]).then(() => done());

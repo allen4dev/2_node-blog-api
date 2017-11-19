@@ -61,6 +61,20 @@ UserSchema.statics.findByToken = function findByToken(token) {
   });
 };
 
+UserSchema.statics.authenticate = function authenticateUser(email, password) {
+  // console.log('Email', email);
+
+  return this.findOne({ email }).then(user => {
+    if (!user) return Promise.reject(new Error('Invalid email'));
+
+    return bcrypt.compare(password, user.password).then(result => {
+      if (!result) return Promise.reject(new Error('Invalid password'));
+
+      return user;
+    });
+  });
+};
+
 UserSchema.pre('save', function hashPassword(next) {
   if (this.isModified('password')) {
     const saltRounds = 10;
