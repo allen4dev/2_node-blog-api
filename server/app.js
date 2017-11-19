@@ -6,6 +6,7 @@ require('./api/comments/model');
 
 const express = require('express');
 
+const router = require('./router');
 const api = require('./api');
 const auth = require('./auth/router');
 
@@ -16,6 +17,10 @@ const app = express();
 
 appMiddleware(app);
 
+app.set('views', `${__dirname}/views`);
+app.set('view engine', 'pug');
+
+app.use('/', router);
 app.use('/api', api);
 app.use('/auth', auth);
 
