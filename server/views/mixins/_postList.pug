@@ -1,10 +1,10 @@
-mixin postList(postlist = [])
-  if postlist.length === 0
+mixin postList(posts = [])
+  if posts.length === 0
     .container
       p.message No posts.
   else
     section.PostList
-      each post in postlist
+      each post in posts
         article.Post
-          h4.Post-title Title of the post
-          p.Post-description Description of the post
+          h4.Post-title= post.title
+          p.Post-description= post.description

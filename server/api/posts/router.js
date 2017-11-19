@@ -7,7 +7,10 @@ const router = Router();
 
 router.param('id', controller.param);
 
-router.post('/', ensureAuth, controller.savePost);
+router
+  .route('/')
+  .get(controller.getAll)
+  .post(ensureAuth, controller.savePost);
 
 router.get('/:id/comments', controller.getComments);
 

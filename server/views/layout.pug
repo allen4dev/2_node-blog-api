@@ -8,10 +8,23 @@ html(lang="en")
   body
     block header
       header.Header
-        Put header here
+        .Logo
+          h1.Logo-title Node Blog
+        
+        if user
+          .UserBox
+            .UserBox-info
+              span.UserInfo-username username
+              span.UserInfo-email email
+            .UserBox-actions
+              a.UserBox-signout(href="#") Signout
+        else
+          .Header-actions
+            a.Header-signin(href="#") Signin
+            a.Header-Signup(href="#") Signup
     .Content
       block content
     
     block footer
       footer.Footer
-        allen4dev 2017
+        p allen4dev 2017

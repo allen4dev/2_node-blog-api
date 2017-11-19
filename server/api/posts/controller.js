@@ -14,6 +14,15 @@ exports.param = (req, res, next, id) => {
     .catch(next);
 };
 
+// Just for show something Homepage
+exports.getAll = (req, res, next) => {
+  Post.find({})
+    .then(posts => {
+      res.status(200).send({ posts });
+    })
+    .catch(next);
+};
+
 exports.savePost = (req, res, next) => {
   const post = new Post({ ...req.body, author: req.user._id });
 
