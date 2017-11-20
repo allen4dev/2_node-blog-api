@@ -1,3 +1,5 @@
+include _postCard
+
 mixin postList(posts = [])
   if posts.length === 0
     .container
@@ -5,6 +7,4 @@ mixin postList(posts = [])
   else
     section.PostList
       each post in posts
-        article.Post
-          h4.Post-title= post.title
-          p.Post-description= post.description
+        +postCard(post)

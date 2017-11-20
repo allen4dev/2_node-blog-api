@@ -1,0 +1,6 @@
+mixin postCard(post)
+  article.Post
+    .Post-header
+      h4.Post-title= post.title
+      a.Post-edit(href=`/edit/${post._id}`) Edit
+    p.Post-description= post.description

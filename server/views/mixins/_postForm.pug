@@ -1,0 +1,13 @@
+mixin postForm(post = {})
+  form.PostForm(method="POST" action=`/create/${post._id || ''}`)
+    .Field
+      label.Field-label Title
+      input.Field-input(type="text", name="title", placeholder="Post title" value=post.title)
+    .Field
+      label.Field-label Description
+      textarea.Field-textare(name="description")= post.description
+    .Field
+      if post.title
+        button.Field-button(type="submit") Edit Post
+      else
+        button.Field-button(type="submit") Create Post

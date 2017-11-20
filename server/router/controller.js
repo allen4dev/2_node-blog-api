@@ -52,6 +52,36 @@ exports.createUser = (req, res, next) => {
     .catch(next);
 };
 
+exports.updateForm = (req, res, next) => {
+  axios
+    .get(`http://localhost:3000/api/posts/${req.params.id}`)
+    .then(response => {
+      const { post } = response.data;
+      res.render('editPost', { post });
+    })
+    .catch(next);
+};
+
+exports.updatePost = (req, res, next) => {
+  const { title, description } = req.body;
+
+  axios
+    .put(
+      `http://localhost:3000/api/posts/${req.params.id}`,
+      {
+        title,
+        description,
+      },
+      {
+        headers: { Authorization: `Bearer ${req.user.token}` },
+      }
+    )
+    .then(post => {
+      res.redirect('/');
+    })
+    .catch(next);
+};
+
 exports.signin = (req, res, next) => {
   res.render('form', { route: 'login' });
 };

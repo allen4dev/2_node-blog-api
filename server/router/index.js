@@ -19,6 +19,9 @@ router.post('/signup', controller.createUser);
 router.get('/create', ensureAuth, controller.createForm);
 router.post('/create', ensureAuth, controller.createPost);
 
+router.get('/edit/:id', ensureAuth, controller.updateForm);
+router.post('/create/:id', ensureAuth, controller.updatePost);
+
 router.post(
   '/login',
   passport.authenticate('local', {
