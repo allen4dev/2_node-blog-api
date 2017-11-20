@@ -1,4 +1,4 @@
-mixin postForm(post = {})
+mixin postForm(post = {}, categories = [] )
   form.PostForm(method="POST" action=`/create/${post._id || ''}`)
     .Field
       label.Field-label Title
@@ -9,11 +9,10 @@ mixin postForm(post = {})
 
     .Field
       label.Field-label Categories
-      select.Field-checkboxGroup
-        option.Field-option Games
-        option.Field-option Games
-        option.Field-option Games
-
+      ul.Field-checkboxGroup
+        each category in categories
+          input(name="categories" value=category._id type="checkbox")
+          label #{category.name}
     .Field
       if post.title
         button.Field-button(type="submit") Edit Post

@@ -5,6 +5,8 @@ const Comment = mongoose.model('Comment');
 
 exports.param = (req, res, next, id) => {
   Post.findById(id)
+    .populate('categories')
+    .exec()
     .then(post => {
       if (!post) return Promise.reject(new Error(`Post ${id} not found`));
 
@@ -17,6 +19,8 @@ exports.param = (req, res, next, id) => {
 // Just for show something Homepage
 exports.getAll = (req, res, next) => {
   Post.find({})
+    .populate('categories')
+    .exec()
     .then(posts => {
       res.status(200).send({ posts });
     })

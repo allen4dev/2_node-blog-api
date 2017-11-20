@@ -3,6 +3,14 @@ const mongoose = require('mongoose');
 const Category = mongoose.model('Category');
 const Post = mongoose.model('Post');
 
+exports.getCategories = (req, res, next) => {
+  Category.find({})
+    .then(categories => {
+      res.status(200).send({ categories });
+    })
+    .catch(next);
+};
+
 exports.saveCategory = (req, res, next) => {
   const { name } = req.body;
   const category = new Category({ name });

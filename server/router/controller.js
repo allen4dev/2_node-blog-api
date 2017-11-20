@@ -17,21 +17,21 @@ exports.home = (req, res, next) => {
 };
 
 exports.createForm = (req, res, next) => {
-  res.render('editPost');
+  axios
+    .get('http://localhost:3000/api/categories')
+    .then(response => {
+      const { categories } = response.data;
+      res.render('editPost', { categories });
+    })
+    .catch(next);
 };
 
 exports.createPost = (req, res, next) => {
-  const { title, description } = req.body;
-
   // Refactor: Create a configured instance of axios
   axios
-    .post(
-      'http://localhost:3000/api/posts',
-      { title, description },
-      {
-        headers: { Authorization: `Bearer ${req.user.token}` },
-      }
-    )
+    .post('http://localhost:3000/api/posts', req.body, {
+      headers: { Authorization: `Bearer ${req.user.token}` },
+    })
     .then(response => {
       res.redirect('/');
     })
@@ -39,29 +39,24 @@ exports.createPost = (req, res, next) => {
 };
 
 exports.updateForm = (req, res, next) => {
-  axios
-    .get(`http://localhost:3000/api/posts/${req.params.id}`)
-    .then(response => {
-      const { post } = response.data;
-      res.render('editPost', { post });
+  Promise.all([
+    axios.get('http://localhost:3000/api/categories'),
+    axios.get(`http://localhost:3000/api/posts/${req.params.id}`),
+  ])
+    .then(results => {
+      res.render('editPost', {
+        categories: results[0].data.categories,
+        post: results[1].data.post,
+      });
     })
     .catch(next);
 };
 
 exports.updatePost = (req, res, next) => {
-  const { title, description } = req.body;
-
   axios
-    .put(
-      `http://localhost:3000/api/posts/${req.params.id}`,
-      {
-        title,
-        description,
-      },
-      {
-        headers: { Authorization: `Bearer ${req.user.token}` },
-      }
-    )
+    .put(`http://localhost:3000/api/posts/${req.params.id}`, req.body, {
+      headers: { Authorization: `Bearer ${req.user.token}` },
+    })
     .then(post => {
       res.redirect('/');
     })
@@ -102,7 +97,7 @@ exports.updateMe = (req, res, next) => {
       },
       {
         headers: { Authorization: `Bearer ${req.user.token}` },
-      }
+      },
     )
     .then(user => {
       res.redirect('/me');
