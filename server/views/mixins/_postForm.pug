@@ -6,6 +6,14 @@ mixin postForm(post = {})
     .Field
       label.Field-label Description
       textarea.Field-textare(name="description")= post.description
+
+    .Field
+      label.Field-label Categories
+      select.Field-checkboxGroup
+        option.Field-option Games
+        option.Field-option Games
+        option.Field-option Games
+
     .Field
       if post.title
         button.Field-button(type="submit") Edit Post
