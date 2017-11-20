@@ -67,6 +67,8 @@ exports.getPosts = (req, res, next) => {
   const id = req.params.id;
 
   Post.find({ author: id })
+    .populate('categories')
+    .exec()
     .then(posts => {
       res.status(200).send({ posts });
     })

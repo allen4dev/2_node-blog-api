@@ -4,7 +4,7 @@ const axios = require('axios');
 exports.home = (req, res, next) => {
   // Refactor: Create a client
   axios
-    .get('http://localhost:3000/api/posts')
+    .get(`http://localhost:3000/api/users/${req.user._id}/posts`)
     .then(response => {
       const { posts } = response.data;
       res.render('index', {
@@ -55,6 +55,27 @@ exports.updateForm = (req, res, next) => {
 exports.updatePost = (req, res, next) => {
   axios
     .put(`http://localhost:3000/api/posts/${req.params.id}`, req.body, {
+      headers: { Authorization: `Bearer ${req.user.token}` },
+    })
+    .then(post => {
+      res.redirect('/');
+    })
+    .catch(next);
+};
+
+exports.deleteForm = (req, res, next) => {
+  axios
+    .get(`http://localhost:3000/api/posts/${req.params.id}`)
+    .then(response => {
+      const { post } = response.data;
+      res.render('deleteForm', { post });
+    })
+    .catch(next);
+};
+
+exports.deletePost = (req, res, next) => {
+  axios
+    .delete(`http://localhost:3000/api/posts/${req.params.id}`, {
       headers: { Authorization: `Bearer ${req.user.token}` },
     })
     .then(post => {
