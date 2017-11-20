@@ -9,13 +9,18 @@ html(lang="en")
     block header
       header.Header
         .Logo
-          h1.Logo-title Node Blog
-        
+          h1.Logo-title
+            a(href="/") Node Blog
+
         if user
+          nav.Navigation
+            a.Navigation-link(href="/create") Create Post
+            a.Navigation-link(href="/me") Profile
+
           .UserBox
             .UserBox-info
-              span.UserInfo-username username
-              span.UserInfo-email email
+              span.UserInfo-username= user.username || username
+              span.UserInfo-email= user.email
             .UserBox-actions
               a.UserBox-signout(href="/logout") Signout
         else
@@ -24,7 +29,7 @@ html(lang="en")
             a.Header-Signup(href="/signup") Signup
     .Content
       block content
-    
+
     block footer
       footer.Footer
         p allen4dev 2017

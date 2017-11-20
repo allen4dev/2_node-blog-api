@@ -1,7 +1,7 @@
 extends layout
 
 block content
-  form.Form(method="POST" action="/login")
+  form.Form(method="POST" action=`/${route}`)
     .Form-field
       label.Form-label(for="") Email
       input(name="email" type="text", placeholder="email@example.test")

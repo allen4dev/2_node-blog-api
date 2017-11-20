@@ -12,12 +12,19 @@ function ensureAuth(req, res, next) {
 
 router.get('/', ensureAuth, controller.home);
 router.get('/signin', controller.signin);
+
+router.get('/signup', controller.signup);
+router.post('/signup', controller.createUser);
+
+router.get('/create', ensureAuth, controller.createForm);
+router.post('/create', ensureAuth, controller.createPost);
+
 router.post(
   '/login',
   passport.authenticate('local', {
     successRedirect: '/',
     failureRedirect: '/signin',
-  }),
+  })
 );
 
 router.get('/posts/:id');
