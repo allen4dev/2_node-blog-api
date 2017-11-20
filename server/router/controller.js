@@ -38,20 +38,6 @@ exports.createPost = (req, res, next) => {
     .catch(next);
 };
 
-exports.createUser = (req, res, next) => {
-  const { email, password } = req.body;
-
-  axios
-    .post('http://localhost:3000/api/users', {
-      email,
-      password,
-    })
-    .then(response => {
-      res.redirect('/signin');
-    })
-    .catch(next);
-};
-
 exports.updateForm = (req, res, next) => {
   axios
     .get(`http://localhost:3000/api/posts/${req.params.id}`)
@@ -78,6 +64,48 @@ exports.updatePost = (req, res, next) => {
     )
     .then(post => {
       res.redirect('/');
+    })
+    .catch(next);
+};
+
+exports.createUser = (req, res, next) => {
+  const { email, password } = req.body;
+
+  axios
+    .post('http://localhost:3000/api/users', {
+      email,
+      password,
+    })
+    .then(response => {
+      res.redirect('/signin');
+    })
+    .catch(next);
+};
+
+exports.getMe = (req, res, next) => {
+  res.render('profile', { user: req.user });
+};
+
+exports.updateMeForm = (req, res, next) => {
+  res.render('updateMe', { user: req.user });
+};
+
+exports.updateMe = (req, res, next) => {
+  const { fullname, username } = req.body;
+
+  axios
+    .put(
+      'http://localhost:3000/api/users',
+      {
+        fullname,
+        username,
+      },
+      {
+        headers: { Authorization: `Bearer ${req.user.token}` },
+      }
+    )
+    .then(user => {
+      res.redirect('/me');
     })
     .catch(next);
 };

@@ -1,0 +1,14 @@
+extends layout
+
+block content
+  form.Form(method="POST" action="/me/update")
+    .Field
+      label.Form-label Full name
+      input(type="text" name="fullname" placeholder="john doe")
+
+    .Field
+      label.Form-label Username
+      input(type="text" name="username" placeholder="jdoe")
+
+    .Field
+      button(type="submit") Update profile

@@ -1,0 +1,10 @@
+extends layout
+
+block content
+  .Profile
+    .container
+      a.Profile-link(href="/me/update") Update profile
+    .Profile-content
+      h2.Profile-fullname= user.fullname
+      h3.Profile-username= user.username
+      p.Profile-username= user.email
