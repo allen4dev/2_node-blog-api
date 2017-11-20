@@ -1,0 +1,6 @@
+extends layout
+
+block content
+  form.Form(method="POST" action="/me/delete")
+    p.Form-text Are you sure you want to delete your account?
+    button.Form-button(type="submit") Delete account

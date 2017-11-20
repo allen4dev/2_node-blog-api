@@ -68,7 +68,7 @@ exports.deleteForm = (req, res, next) => {
     .get(`http://localhost:3000/api/posts/${req.params.id}`)
     .then(response => {
       const { post } = response.data;
-      res.render('deleteForm', { post });
+      res.render('deletePost', { post });
     })
     .catch(next);
 };
@@ -100,6 +100,20 @@ exports.createUser = (req, res, next) => {
 
 exports.getMe = (req, res, next) => {
   res.render('profile', { user: req.user });
+};
+
+exports.deleteMeForm = (req, res, next) => {
+  res.render('deleteMe', { user: req.user });
+};
+
+exports.deleteMe = (req, res, next) => {
+  axios
+    .delete('http://localhost:3000/api/users', {
+      headers: { Authorization: `Bearer ${req.user.token}` },
+    })
+    .then(() => {
+      res.redirect('/signin');
+    });
 };
 
 exports.updateMeForm = (req, res, next) => {

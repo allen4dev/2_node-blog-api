@@ -29,6 +29,9 @@ router.get('/me', ensureAuth, controller.getMe);
 router.get('/me/update', ensureAuth, controller.updateMeForm);
 router.post('/me/update', ensureAuth, controller.updateMe);
 
+router.get('/me/delete', ensureAuth, controller.deleteMeForm);
+router.post('/me/delete', ensureAuth, controller.deleteMe);
+
 router.post(
   '/login',
   passport.authenticate('local', {
